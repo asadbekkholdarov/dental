@@ -32,18 +32,18 @@ exports.generateReport = async (req, res) => {
 
     const report = doctors.map((doctor) => {
       const patientsServed = patients.filter((patient) =>
-        patient.medicalHistory.some((history) => history.doctor === doctor.name)
+        patient.medicalHistory.some((history) => history.doctor === doctor.name.toLowerCase())
       );
 
       const totalRevenue = patientsServed.reduce((sum, patient) => {
         const revenue = patient.medicalHistory
-          .filter((history) => history.doctor === doctor.name)
+          .filter((history) => history.doctor === doctor.name.toLowerCase())
           .reduce((innerSum, history) => innerSum + (history.revenue || 0), 0);
         return sum + revenue;
       }, 0);
 
       return {
-        doctor: doctor.name,
+        doctor: doctor.name.toLowerCase(),
         patientsServed: patientsServed.length,
         total: totalRevenue,
         demographics: patientsServed.map((patient) => ({
@@ -51,10 +51,10 @@ exports.generateReport = async (req, res) => {
           name: patient.firstName,
           revenue:
             patient.medicalHistory
-              .filter((history) => history.doctor === doctor.name)
+              .filter((history) => history.doctor === doctor.name.toLowerCase())
               .map((e) => e.revenue)[0] || 0,
           date: patient.medicalHistory
-            .filter((history) => history.doctor === doctor.name)
+            .filter((history) => history.doctor === doctor.name.toLowerCase())
             .map((e) => e.date)[0]
             .toLocaleString(),
         })),

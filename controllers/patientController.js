@@ -3,6 +3,7 @@ const Patient = require("../models/Patient");
 
 exports.createPatient = async (req, res) => {
   const newPatient = new Patient(req.body);
+
   try {
     const savedPatient = await newPatient.save();
     res.status(201).json(savedPatient);
@@ -29,6 +30,33 @@ exports.getPatient = async (req, res) => {
     res.status(200).json({
       patient,
     });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+exports.deletePatient = async (req, res) => {
+  try {
+    const patient = await Patient.findByIdAndDelete(req.params.id);
+    if (!patient) return res.status(500).send({ message: "Not Found" });
+    res.send({ status: "successfully deleted" });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+exports.updatePatient = async (req, res) => {
+  console.log(req.body);
+  try {
+    const patient = await Patient.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+
+    if (!patient) {
+      return res.status(404).json({ message: "Patient not found" });
+    }
+
+    res.status(200).json(patient);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }

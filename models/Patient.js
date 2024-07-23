@@ -10,7 +10,7 @@ const patientSchema = new mongoose.Schema({
   phone: { type: String, required: true },
   medicalHistory: [
     {
-      treatment: { type: String, required: true },
+      treatment: { type: String },
       date: { type: Date, default: Date.now },
       doctor: { type: String },
       revenue: { type: Number },
